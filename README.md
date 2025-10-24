@@ -389,8 +389,8 @@ This project is built for educational purposes as part of CodePath's WEB103 cour
 ## 👤 Author
 
 **Your Name**
-- GitHub: [@yourusername](https://github.com/yourusername)
-- LinkedIn: [Your Profile](https://linkedin.com/in/yourprofile)
+- GitHub: [@jellyfishing2346](https://github.com/jellyfishing2346)
+- LinkedIn: [Faizan Khan](https://linkedin.com/in/faizan-khan34)
 
 ---
 
