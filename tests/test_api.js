@@ -1,4 +1,3 @@
-import fetch from 'node-fetch'
 import process from 'process'
 
 async function run() {
