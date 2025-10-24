@@ -31,3 +31,20 @@ body{
 
 .option-wrap:hover .option-img{ transform: scale(1.03); }
 .option-selected{ outline: 3px solid rgba(139,31,31,0.9); transform: translateY(-4px); }
+
+/* Floating price box bottom-left to match design */
+.price-box {
+  position: fixed;
+  left: 24px;
+  bottom: 24px;
+  background: var(--brand);
+  color: white;
+  padding: 16px 24px;
+  border-radius: 8px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.5);
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+

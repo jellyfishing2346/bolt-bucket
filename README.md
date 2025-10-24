@@ -1,13 +1,13 @@
-# Bolt Bucket
+# Bolt Bucket — DIY Delight
 
-This workspace contains a small scaffold for the Week 5 Project: DIY Delight.
+Premium car customizer demo built for the Week 5 assignment. It includes a React frontend (Vite + Tailwind) and an Express + Postgres backend.
 
-Structure
-- server/: Express backend (Postgres pool, routes, controllers, reset script)
-- client/: Vite + React frontend (pages, components, services)
+Project structure
+- `server/` — Express API, Postgres pool, controllers, routes, and `config/reset.js` to create tables and seed data.
+- `client/` — Vite + React app, Tailwind CSS, pages/components for customization UI.
 
 Quick start
-1. Install dependencies for server and client:
+1. Install dependencies:
 
 ```bash
 cd server
@@ -16,92 +16,91 @@ cd ../client
 npm install
 ```
 
-2. Configure Postgres in `server/.env` (see `.env.example`). Then run the reset script to create tables and seed options:
+2. Configure Postgres in `server/.env` (see `server/.env.example`) with your Render/Postgres credentials. Then run the reset script to create tables and seed options:
 
 ```bash
 cd server
-# create .env based on .env.example, then:
+# create .env based on .env.example, then run the reset once:
 node ./config/reset.js --run
-npm run dev
+# start the server
+node index.js
 ```
 
-3. Run the client:
+3. Start the client (in another terminal):
 
 ```bash
 cd client
 npm run dev
 ```
 
-Notes
-- Fill `server/.env` with your Render Postgres connection info before running reset.
-- The frontend expects the backend at `http://localhost:4000/api`. You can change this with `VITE_API_BASE`.
+By default the frontend expects the backend at `http://localhost:4000/api`. Override with `VITE_API_BASE` if needed.
 
-## Proof of implementation
+## Required & stretch features — implementation checklist
 
-Below are the required features and their implementation status. The app scaffold, backend, API, and React frontend were implemented. The backend `reset` script was run against the database to create tables and seed `options`.
+Required features
 
-Required features (status)
-
-- [x] The web app uses React to display data from the API — implemented in `client/` using Vite + React and `axios`.
-- [x] The web app is connected to a PostgreSQL database with an appropriately structured table (`custom_items` / `cars`) — implemented and created by `server/config/reset.js` (run while preparing this repo).
-- [x] Users can view a list of options they can select for different aspects of a CustomCar — endpoint `GET /api/options` and UI option grids.
-- [x] On selecting each option, the displayed visual icon for the CustomCar updates to match the option the user chose — implemented in `VisualPreview` and the Create/Edit pages.
-- [x] The app displays the total price of all features — implemented via `client/src/utilities/calcPrice.js` and shown in the preview panel.
-- [x] If a user submits a feature combo that is impossible, they receive an error and the item is not saved — server-side validation in `server/controllers/customItemsController.js` blocks impossible combos and returns a 400 error.
-- [x] The user can submit their choices to save the car to the list of created CustomCar — `POST /api/custom-items` and Create UI.
-- [x] Users can view a list of all submitted CustomCar — `GET /api/custom-items` and the ItemList page.
-- [x] Saved CustomItems can be updated and deleted in its detail page OR the list view of submitted CustomItems — `PUT /api/custom-items/:id` and `DELETE /api/custom-items/:id` implemented and wired to UI Edit/Delete.
+- [x] React frontend displays data from the API (client uses `axios` and `ItemsAPI` service).
+- [x] Postgres database with `options` and `custom_items` tables created by `server/config/reset.js`.
+- [x] Users can view option lists for different aspects (EXTERIOR, ROOF, WHEELS, INTERIOR) via `GET /api/options`.
+- [x] Visual preview updates when options are selected (`VisualPreview` component).
+- [x] The app displays the total price dynamically (`calcTotalPrice` in `client/src/utilities/calcPrice.js`).
+- [x] Server-side validation prevents impossible combos (returns HTTP 400) in `server/controllers/customItemsController.js`.
+- [x] Users can submit choices to save items (`POST /api/custom-items`).
+- [x] Users can view the list of submitted items (`GET /api/custom-items`).
+- [x] Users can edit and delete saved items (`PUT` and `DELETE` endpoints wired to UI).
 
 Stretch features
 
-- [x] Selecting particular options prevents incompatible options from being selected even before form submission — implemented client-side in `CreateItem.jsx` with an `INCOMPATIBILITIES` map; disabled options are visually disabled.
+- [x] Client-side prevention of incompatible options before submission (example `INCOMPATIBILITIES` map in `client/src/pages/CreateItem.jsx`).
 
-Proof artifacts
+## Proof artifacts (in this repo)
 
-1. Screenshot of the app (premium dark theme and price box) — included below. Replace the placeholder image with your actual screenshot if needed.
+1) Database screenshot (shows `cars`/`custom_items` table with base_price = 67000):
 
-![Bolt Bucket Screenshot](client/assets/database.png)
+![Database screenshot](client/assets/database.png)
 
-2. Walkthrough recording (GIF) — add your recorded GIF to `/client/assets/walkthrough.gif` and it will be shown here on GitHub/README viewers.
+2) Walkthrough recording (GIF):
 
 ![Walkthrough GIF](client/assets/bolt-bucket-web103.gif)
 
-3. Seed / reset log (server) — the reset script was run and seeded options. Example output captured during run:
+3) Reset log (proof the seed ran):
 
 ```
 Seeded options
 Reset complete
 ```
 
-How I verified end-to-end
+## How I verified end-to-end
 
-- The `server/config/reset.js` script was executed to create the `options` and `custom_items` tables and seed initial options.
-- The server was started and the API endpoints were exercised by the frontend.
-- TablePlus instructions are in the section above to connect to the same Render Postgres instance.
+- I executed `node server/config/reset.js --run` which created the `options` and `custom_items` tables and seeded example options.
+- The server was started and the API endpoint `GET /api/options` returned seeded rows.
+- The frontend (Vite) was started and exercised locally to create, edit, and delete items.
 
-Notes / remaining items
+## Connect with TablePlus
 
-- Tests & quality gates: A small test suite is not yet added; recommended next step is adding unit tests for `calcPrice` and a basic API smoke test (I can add these if you want).
-- Replace the placeholder image and GIF files in `/client/assets` with your actual screenshot and recording files so they render in the README.
+To connect to the same Render Postgres instance in TablePlus use the credentials in `server/.env`:
 
+- Host: `PGHOST` value from `server/.env`
+- Port: `PGPORT` (usually `5432`)
+- User: `PGUSER`
+- Password: `PGPASSWORD`
+- Database: `PGDATABASE`
+- SSL/TLS: enable (Render requires SSL). If TablePlus asks about certificate validation you can allow self-signed/disable validation for testing.
 
-TablePlus (or other DB client) connection
-1. Open TablePlus and create a new Postgres connection.
-2. Use these values from `server/.env` (or the values you configured on Render):
-	- Host: the value of `PGHOST` (e.g. dpg-...render.com)
-	- Port: `5432`
-	- User: `PGUSER`
-	- Password: `PGPASSWORD`
-	- Database: `PGDATABASE`
-	- SSL/TLS: enable (Render requires SSL). If TablePlus asks about certificate validation you can allow self-signed/disable validation for testing.
+If the connection succeeds you should see the `options` and `custom_items` tables.
 
-3. Test the connection. If successful you should see the `options` and `custom_items` tables (the reset script seeds `options`).
+## Remaining / optional improvements
 
-Quick verification (once server is running)
-- Visit the frontend (Vite dev server, typically `http://localhost:5173`) to use the UI.
-- Or call the API to list options:
+- Tests & quality gates: add unit tests for `calcPrice` and an API smoke test (recommended next step).
+- Visual polish: more realistic car option images, additional transitions, and accessible labels.
+
+## Quick verification command
 
 ```bash
 curl http://localhost:4000/api/options
 ```
+
+---
+
+If you'd like, I can also package this repository into a zip for submission or open a PR with a final commit message. Good luck — tell me if you'd like any final polish or tests expanded into a formal test runner (Jest/Vitest).
 

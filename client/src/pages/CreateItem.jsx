@@ -96,14 +96,14 @@ export default function CreateItem({ onNavigate }) {
             <div className="card p-4">
               <h4 className="mb-4">Preview</h4>
               <VisualPreview selections={selections} />
-
-              <div className="mt-6 p-3 bg-white/5 border border-brand rounded-md flex items-center justify-between">
-                <div className="text-sm">Total</div>
-                <div className="text-xl">💲 {total}</div>
-              </div>
             </div>
           </aside>
         </div>
+      </div>
+      {/* Floating price box bottom-left */}
+      <div className="price-box">
+        <span style={{ fontSize: 20 }}>💰</span>
+        <div style={{ fontSize: 22 }}>${total}</div>
       </div>
     </div>
   )
