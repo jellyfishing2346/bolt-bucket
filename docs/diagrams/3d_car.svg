@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1000" height="400" viewBox="0 0 1000 400" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="metal" x1="0" x2="1">
+      <stop offset="0%" stop-color="#b8c6d9"/>
+      <stop offset="50%" stop-color="#6f8ba8"/>
+      <stop offset="100%" stop-color="#243b55"/>
+    </linearGradient>
+    <linearGradient id="glass" x1="0" x2="1">
+      <stop offset="0%" stop-color="#d7eefc" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#93b9d6" stop-opacity="0.6"/>
+    </linearGradient>
+    <filter id="softShadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="18" result="b"/>
+      <feOffset dx="0" dy="18"/>
+      <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <rect width="100%" height="100%" fill="#071028"/>
+
+  <!-- Ground reflection -->
+  <ellipse cx="500" cy="340" rx="360" ry="40" fill="#001223" opacity="0.6"/>
+
+  <!-- Car shadow -->
+  <ellipse cx="500" cy="320" rx="300" ry="30" fill="#000" opacity="0.35"/>
+
+  <!-- Car body (stylized 3D) -->
+  <g transform="translate(80,60)" filter="url(#softShadow)">
+    <!-- Lower hull -->
+    <path d="M60 220 C120 180, 260 170, 480 190 C660 205, 820 220, 900 220 L900 260 L60 260 Z" fill="url(#metal)"/>
+
+    <!-- Upper cabin -->
+    <path d="M160 120 C220 80, 360 70, 560 90 C700 105, 780 130, 840 160 C820 140, 740 100, 560 100 C400 100, 260 120, 160 160 Z" fill="#2b3b4a"/>
+
+    <!-- Windows -->
+    <path d="M250 110 C330 90, 420 85, 540 98 C660 110, 720 130, 750 145 L740 170 C640 150, 540 145, 450 150 C360 155, 280 145, 250 130 Z" fill="url(#glass)" opacity="0.95"/>
+
+    <!-- Headlight (glow) -->
+    <ellipse cx="880" cy="200" rx="18" ry="10" fill="#ffd98a" opacity="0.95"/>
+    <ellipse cx="880" cy="200" rx="36" ry="18" fill="#ffd98a" opacity="0.08"/>
+
+    <!-- Wheel front -->
+    <g transform="translate(260,235)">
+      <circle r="28" fill="#0b0f12"/>
+      <circle r="16" fill="#8b8f92"/>
+      <circle r="8" fill="#2a2d31"/>
+    </g>
+
+    <!-- Wheel rear -->
+    <g transform="translate(700,235)">
+      <circle r="28" fill="#0b0f12"/>
+      <circle r="16" fill="#8b8f92"/>
+      <circle r="8" fill="#2a2d31"/>
+    </g>
+
+    <!-- Rim highlights -->
+    <path d="M245 200 C270 190, 300 190, 330 200" stroke="#ffffff" stroke-opacity="0.06" stroke-width="6" fill="none"/>
+    <path d="M690 200 C720 190, 750 190, 780 200" stroke="#ffffff" stroke-opacity="0.06" stroke-width="6" fill="none"/>
+  </g>
+
+  <!-- Light band (rim lighting) -->
+  <rect x="60" y="40" width="880" height="8" fill="rgba(255,255,255,0.02)"/>
+
+  <!-- Footer caption -->
+  <text x="40" y="380" font-family="Inter, Arial, sans-serif" font-size="12" fill="#7fa0c6">3D concept: layered shapes, gradient metal, soft reflections — design guidance for future Three.js previews.</text>
+</svg>

@@ -388,7 +388,7 @@ This project is built for educational purposes as part of CodePath's WEB103 cour
 
 ## 👤 Author
 
-**Your Name**
+**Faizan Khan**
 - GitHub: [@jellyfishing2346](https://github.com/jellyfishing2346)
 - LinkedIn: [Faizan Khan](https://linkedin.com/in/faizan-khan34)
 
