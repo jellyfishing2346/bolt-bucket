@@ -1,0 +1,33 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root{
+  --bg: #1a1a1a;
+  --brand: #8B1F1F;
+}
+
+body{
+  @apply bg-[var(--bg)] text-white antialiased;
+  background-image: linear-gradient(rgba(0,0,0,.6), rgba(0,0,0,.6)), url('https://images.unsplash.com/photo-1503376780353-7e6692767b70?&auto=format&fit=crop&w=1600&q=60');
+  background-size: cover;
+  background-position: center;
+}
+
+.card{
+  background: rgba(20,20,20,0.7);
+  border: 1px solid rgba(255,255,255,0.04);
+  border-radius: 12px;
+}
+
+.btn-brand{
+  background: var(--brand);
+  color: white;
+}
+
+.option-img{
+  @apply w-full h-28 object-cover rounded-md transition-transform duration-200;
+}
+
+.option-wrap:hover .option-img{ transform: scale(1.03); }
+.option-selected{ outline: 3px solid rgba(139,31,31,0.9); transform: translateY(-4px); }

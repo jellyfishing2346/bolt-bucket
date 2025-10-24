@@ -1,90 +1,110 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { getOptions, createItem } from '../services/ItemsAPI'
-import OptionSelector from '../components/OptionSelector'
+import OptionGrid from '../components/OptionGrid'
 import VisualPreview from '../components/VisualPreview'
+import CustomizerTabs from '../components/CustomizerTabs'
 import { calcTotalPrice } from '../utilities/calcPrice'
 
+const TABS = ['EXTERIOR','ROOF','WHEELS','INTERIOR']
+
+// Example incompatible rules (client-side): if interior=leather then wheels 'standard' is incompatible
+const INCOMPATIBILITIES = [
+  { if: { interior: 'leather' }, cannotBe: { wheels: ['standard'] } },
+]
+
 export default function CreateItem({ onNavigate }) {
-  const [options, setOptions] = useState([])
+  const [opts, setOpts] = useState([])
   const [byCategory, setByCategory] = useState({})
-  const [name, setName] = useState('')
+  const [name, setName] = useState('My New Car')
   const [selections, setSelections] = useState({})
+  const [convertible, setConvertible] = useState(false)
+  const [active, setActive] = useState('EXTERIOR')
 
   useEffect(() => {
     getOptions().then(data => {
-      setOptions(data)
+      setOpts(data)
       const group = {}
       for (const o of data) {
         group[o.category] = group[o.category] || []
         group[o.category].push(o)
       }
       setByCategory(group)
-      // initialize defaults
       const initial = {}
       for (const cat of Object.keys(group)) {
         initial[cat] = group[cat][0].key
       }
       setSelections(initial)
-    }).catch(err => {
-      console.error('Failed to load options', err)
-    })
+    }).catch(err => console.error(err))
   }, [])
 
-  const total = calcTotalPrice(selections, options)
+  const total = calcTotalPrice(selections, opts) + (convertible ? 2000 : 0)
 
-  function handleChange(cat, key) {
+  function handleSelect(cat, key) {
     setSelections(prev => ({ ...prev, [cat]: key }))
   }
 
-  async function handleSubmit(e) {
-    e.preventDefault()
+  // client-side incompatibility calculation
+  const disabled = useMemo(() => {
+    const disabledMap = {}
+    for (const rule of INCOMPATIBILITIES) {
+      let match = true
+      for (const [k,v] of Object.entries(rule.if)) {
+        if (selections[k] !== v) match = false
+      }
+      if (match) {
+        for (const [cat, keys] of Object.entries(rule.cannotBe)) {
+          disabledMap[cat] = [...(disabledMap[cat]||[]), ...keys]
+        }
+      }
+    }
+    return disabledMap
+  }, [selections])
+
+  async function handleCreate(e) {
+    e?.preventDefault()
     try {
       await createItem({ name, selections, total_price: total })
       onNavigate('list')
     } catch (err) {
-      // show backend error to user
       const msg = err?.response?.data?.error || 'Failed to create'
       alert(msg)
     }
   }
 
-  if (options.length === 0) return <div>Loading options...</div>
+  const currentOptions = byCategory[active.toLowerCase()] || []
 
   return (
-    <div>
-      <h2>Create Item</h2>
-      <form onSubmit={handleSubmit} style={{ display: 'flex', gap: 24 }}>
-        <div style={{ flex: 1 }}>
-          <label>
-            Name
-            <br />
-            <input value={name} onChange={e => setName(e.target.value)} required />
-          </label>
+    <div className="mx-auto max-w-6xl">
+      <div className="card p-6 border border-brand">
+        <CustomizerTabs convertible={convertible} setConvertible={setConvertible} tabs={TABS} active={active} setActive={setActive} />
 
-          {Object.entries(byCategory).map(([cat, opts]) => (
-            <OptionSelector
-              key={cat}
-              category={cat}
-              options={opts}
-              value={selections[cat]}
-              onChange={handleChange}
-            />
-          ))}
+        <div className="flex flex-col md:flex-row gap-6">
+          <div className="flex-1">
+            <div className="mb-4">
+              <input value={name} onChange={e => setName(e.target.value)} className="w-full bg-transparent border border-white/10 p-3 rounded-md text-white" />
+            </div>
 
-          <div style={{ marginTop: 12 }}>
-            <strong>Total: ${total}</strong>
+            <OptionGrid options={currentOptions} category={active.toLowerCase()} value={selections[active.toLowerCase()]} onSelect={handleSelect} disabledKeys={disabled[active.toLowerCase()]} />
+
+            <div className="flex items-center justify-between mt-4">
+              <button onClick={handleCreate} className="btn-brand px-6 py-2 rounded-md">CREATE</button>
+              <button className="btn-brand px-4 py-2 rounded-md">DONE</button>
+            </div>
           </div>
 
-          <div style={{ marginTop: 12 }}>
-            <button type="submit">Save Item</button>
-          </div>
+          <aside className="w-full md:w-72">
+            <div className="card p-4">
+              <h4 className="mb-4">Preview</h4>
+              <VisualPreview selections={selections} />
+
+              <div className="mt-6 p-3 bg-white/5 border border-brand rounded-md flex items-center justify-between">
+                <div className="text-sm">Total</div>
+                <div className="text-xl">💲 {total}</div>
+              </div>
+            </div>
+          </aside>
         </div>
-
-        <aside style={{ width: 240 }}>
-          <h4>Preview</h4>
-          <VisualPreview selections={selections} />
-        </aside>
-      </form>
+      </div>
     </div>
   )
 }
